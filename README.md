@@ -125,11 +125,201 @@ References:
 
 ### MB.2) Project Setup
 
+Create a new directory for project *"se2-freerider"*:
+
+```sh
+mkdir se2-freerider                 # create new project directory
+cd se2-freerider                    # change into directory
+
+git init -b main                    # initialize for git with 'main' branch
+touch .gitignore                    # create empty file .gitignore
+git add .gitignore
+git commit -m "initial commit, .gitignore"
+
+git checkout -b maven-jdbc          # create new branch `maven-jdbc`, switch
+
+# add link named 'downstream' pointing to the remote distribution repository
+git remote add downstream https://github.com/sgra64/se2-freerider.git
+
+# fetch branch 'maven-jdbc' from the remote repository
+git fetch downstream maven-jdbc
+
+# set local branch 'maven-jdbc' to track remote branch 'downstream/maven-jdbc'
+git branch -u downstream/maven-jdbc maven-jdbc
+
+# merge content of downstream branch into local branch 'maven-jdbc'
+git merge --allow-unrelated-histories --strategy-option theirs downstream/maven-jdbc
+
+```
+
+The merge completes with no conflicts:
+
+```
+Auto-merging .gitignore
+Merge made by the 'ort' strategy.
+ .gitignore                                 |  77 +++++
+ .vscode/settings.json                      |  34 ++
+ FREERIDER_DB.session.sql                   |   1 +
+ README.md                                  | 513 +++++++++++++++++++++++++++++
+ docker-compose.yml                         |  26 ++
+ services/freerider_db/Dockerfile           |  20 ++
+ services/freerider_db/access.sql           |  25 ++
+ services/freerider_db/datetime.txt         |  29 ++
+ services/freerider_db/drop_data.sql        |   8 +
+ services/freerider_db/howto.txt            |  62 ++++
+ services/freerider_db/load_sample_data.sql |  28 ++
+ services/freerider_db/schema.sql           |  44 +++
+ 12 files changed, 867 insertions(+)
+ create mode 100644 .vscode/settings.json
+ create mode 100644 FREERIDER_DB.session.sql
+ create mode 100644 README.md
+ create mode 100644 docker-compose.yml
+ create mode 100644 services/freerider_db/Dockerfile
+ create mode 100644 services/freerider_db/access.sql
+ create mode 100644 services/freerider_db/datetime.txt
+ create mode 100644 services/freerider_db/drop_data.sql
+ create mode 100644 services/freerider_db/howto.txt
+ create mode 100644 services/freerider_db/load_sample_data.sql
+ create mode 100644 services/freerider_db/schema.sql
+```
+
+The local branch 'maven-jdbc' now has new files.
+
+```sh
+ls -la              # show content of project directory after merge
+```
+```
+drwxr-xr-x 1 svgr2 Kein     0 Jun  7 01:05 .
+drwxr-xr-x 1 svgr2 Kein     0 Jun  7 00:59 ..
+drwxr-xr-x 1 svgr2 Kein     0 Jun  7 01:05 .git
+-rw-r--r-- 1 svgr2 Kein  1329 Jun  7 01:05 .gitignore               <-- updated
+drwxr-xr-x 1 svgr2 Kein     0 Jun  7 01:05 .vscode
+-rw-r--r-- 1 svgr2 Kein   627 Jun  7 01:05 docker-compose.yml       <-- new
+-rw-r--r-- 1 svgr2 Kein    24 Jun  7 01:05 FREERIDER_DB.session.sql <-- new
+-rw-r--r-- 1 svgr2 Kein 14160 Jun  7 01:05 README.md                <-- new
+drwxr-xr-x 1 svgr2 Kein     0 Jun  7 01:05 services                 <-- new
+```
+
+The [./services](./services) directory contains content for building and
+running Docker containers:
+
+```sh
+find services       # show content of new services directory
+```
+```
+services
+services/freerider_db
+services/freerider_db/access.sql
+services/freerider_db/datetime.txt
+services/freerider_db/Dockerfile
+services/freerider_db/drop_data.sql
+services/freerider_db/howto.txt
+services/freerider_db/load_sample_data.sql
+services/freerider_db/schema.sql
+```
 
 
 &nbsp;
 
 ### MB.3) Build Database Service
+
+[Docker-compose](https://docs.docker.com/compose)
+simplifies image-build and container create and start/stop operations.
+
+[docker-compose.yml](docker-compose.yml)
+is the central file to define all container assets (volumes, images) and
+operations. It can include rules for the container-start order.
+The database container always must start first or other containers may not
+be able to open connections to the database.
+
+[docker-compose.yml](docker-compose.yml)
+currently defines one container (*"service"*) for the database
+with name *"freerider_db"*:
+
+```yml
+name: "freerider"
+services:
+  # database for the freerider reservation system
+  mysqld:
+    container_name: "freerider_db"
+    # path to Dockerfile to build image
+    build: "./services/freerider_db"
+    image: "freerider/db-img:1.0"
+    volumes:
+      - "db-vol:/var/lib/mysql"
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_ROOT_PASSWORD:
+      # created via 'access.sql':
+      # MYSQL_DATABASE: "FREERIDER_DB"
+      # MYSQL_USER: "freerider"
+      # MYSQL_PASSWORD: "free.ride"
+    ports:
+      - "3306:3306"
+    restart: "always"
+
+volumes:
+  # volume to store database data
+  db-vol:
+```
+
+The section for service *"freerider_db"* defines the path to the directory
+where [Dockerfile](services/freerider_db/Dockerfile) resides to build the
+container image: *"freerider/db-img:1.0"*.
+
+The container uses a volume: *"db-vol"* for holding the database data.
+The container exposes port: *"3306"* as standard port for the database
+server process *mysqld*.
+
+The command to build all container assets (volumes, images) and create
+and start containers is:
+
+```sh
+docker-compose up -d        # build and start container(s)
+```
+
+```sh
+docker-compose logs -f      # show logs collected from container(s), -f: following
+```
+
+Container *"freerider_db"* is now running:
+
+<img src="https://raw.githubusercontent.com/sgra64/se2-freerider/markup/maven-jdbc/docker_freerider_db.png" alt="drawing" width="800"/>
+
+Database `FREERIDER_DB` does already exist as well as the user and password that
+both have been configured into the container image.
+
+Load data from
+[services/freerider_db/load_sample_data.sql](services/freerider_db/load_sample_data.sql)
+into the database.
+
+An extension for *VSCode*:
+[SQLTools](https://marketplace.visualstudio.com/items?itemName=mtxr.sqltools)
+allows to connect to the database from the IDE.
+
+Install the extension, connect to the database using the following connection
+information:
+
+```
+"server": "localhost",
+"port": 3306,
+"driver": "MySQL",
+"database": "FREERIDER_DB",
+"username": "freerider",
+"password": "free.ride"
+```
+
+Run the query from file:
+[FREERIDER_DB.session.sql](FREERIDER_DB.session.sql)
+
+```sql
+select * from CUSTOMER;
+```
+
+*SQLTools* will show the open connection (green dot) result of the query:
+
+<img src="https://raw.githubusercontent.com/sgra64/se2-freerider/markup/maven-jdbc/sqltools_query.png" alt="drawing" width="800"/>
+
 
 
 &nbsp;
@@ -441,7 +631,7 @@ assuming the database container is also running:
 java -cp target/jdbc-client-1.0.0-SNAPSHOT-jar-with-dependencies.jar de.freerider.App
 ```
 
-Output shows records obtained from the database:
+Output shows **records obtained from the database:**
 
 ```
 Hello FREERIDER_DB!
@@ -495,8 +685,6 @@ Content of `.jar`-file with packaged dependencies:
 ```
 
 In total: 1823 files.
-
-
 
 
 <!-- 
