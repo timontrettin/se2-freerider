@@ -151,6 +151,11 @@ A selection of important Spring / Spring Boot concepts is explained below:
 
 &nbsp;
 
+<img src="img/spring-ioc-container.jpg" alt="drawing" width="400"/>
+
+
+&nbsp;
+
 ### 1. *Inversion-of-Control (IoC)*
 
 *Inversion-of-Control (IoC)* is a design pattern in which code is not called from
