@@ -19,7 +19,7 @@ services:
       # MYSQL_PASSWORD: "free.ride"
     ports:
       - "3306:3306"
-    restart: "always"
+    # restart: "always"
 
 volumes:
   # volume to store database data

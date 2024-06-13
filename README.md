@@ -237,7 +237,9 @@ currently defines one container (*"service"*) for the database
 with name *"freerider_db"*:
 
 ```yml
+# version: '3'
 name: "freerider"
+
 services:
   # database for the freerider reservation system
   mysqld:
@@ -256,7 +258,7 @@ services:
       # MYSQL_PASSWORD: "free.ride"
     ports:
       - "3306:3306"
-    restart: "always"
+    # restart: "always"
 
 volumes:
   # volume to store database data
@@ -328,7 +330,9 @@ select * from CUSTOMER;
 
 *Maven* is used to build the Java (*"jdbc-client"*) program.
 
-Make sure *maven* is installed and its environment variables have been set:
+Make sure *maven* is installed and its environment variables have been set
+(*MAVEN_HOME* pointing to where *maven* is installed and *M2_HOME* with the
+path where the local *maven* repository is located, usually in the *HOME*-directory):
 
 ```sh
 mvn --version
@@ -402,7 +406,6 @@ jdbc-client/src/test/java
 jdbc-client/src/test/java/de
 jdbc-client/src/test/java/de/freerider
 jdbc-client/src/test/java/de/freerider/AppTest.java
-jdbc-client/target              <-- compiled code
 ...
 ```
 
@@ -438,7 +441,7 @@ Open `jdbc-client/pom.xml` and add lines between the markers:
 </project>
 ```
 
-Rebuild code:
+Change to the `jdbc-client` directory and build the code:
 
 ```sh
 cd jdbc-client
@@ -452,6 +455,9 @@ Run the code:
 ```sh
 mvn --quiet exec:java -Dexec.mainClass="de.freerider.App" -Dexec.args=""
 ```
+
+Output:
+
 ```
 Hello World!
 ```
@@ -482,12 +488,14 @@ java -cp target/jdbc-client-1.0.0-SNAPSHOT.jar de.freerider.App
 Hello World!
 ```
 
-Create an *executable* `.jar`-file by adding a build-plugin to `pom.xml`
-that defines the class with *main()* function to execute:
+Create an *executable* `.jar` by adding a build-plugin to `pom.xml`
+at the end of `pom.xml` (just before the closing `</project>` tag).
+The plugin defines the class with the *main()* function to execute
+when the `.jar` is started:
 
 ```xml
 <build>
-<plugins>
+  <plugins>
     <plugin>
     <groupId>org.apache.maven.plugins</groupId>
     <artifactId>maven-jar-plugin</artifactId>
@@ -500,7 +508,7 @@ that defines the class with *main()* function to execute:
         </archive>
     </configuration>
     </plugin>
-</plugins>
+  </plugins>
 </build>
 ```
 
@@ -517,6 +525,14 @@ Hello World!
 Add code to access the database to `src/main/java/de/freerider/App.java`:
 
 ```java
+package de.freerider;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 public class App {
     // DB connection information
     static final String DB_URL  = "jdbc:mysql://localhost/FREERIDER_DB";
@@ -561,13 +577,16 @@ mvn compile package
 [INFO] BUILD SUCCESS
 ```
 
-Run the application:
+While `compile` completes with `SUCCESS`, running the application:
 
 ```sh
 mvn --quiet exec:java -Dexec.mainClass="de.freerider.App" -Dexec.args=""
+
+# or as executable .jar:
+java -jar target/jdbc-client-1.0.0-SNAPSHOT.jar
 ```
 
-An error occurs: *No suitable driver found for jdbc:mysql://localhost/FREERIDER_DB*
+causes an error: *No suitable driver found for jdbc:mysql://localhost/FREERIDER_DB*
 
 ```
 Hello FREERIDER_DB!
@@ -582,14 +601,12 @@ IDER_DB
         at java.base/java.lang.Thread.run(Thread.java:1583)
 ```
 
-While Java includes SQL-libraries (package: `java.sql`), it does not include
+The Java JRE includes SQL-libraries (package: `java.sql`), but it does not include
 drivers to connect to specific databases.
 
 The driver-package for the *mysql* database must be added from the
 [*Maven Central*](https://mvnrepository.com)
-repository.
-
-Query for *"MySQL Connector Java"*, which will find the
+repository. Search for *"MySQL Connector Java"*, which will find the
 [mysql-connector-java](https://mvnrepository.com/artifact/mysql/mysql-connector-java)
 package.
 
@@ -685,6 +702,9 @@ Content of `.jar`-file with packaged dependencies:
 ```
 
 In total: 1823 files.
+
+
+Push branch `maven-jdbc` with all changes to your remote repository.
 
 
 <!-- 

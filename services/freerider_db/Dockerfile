@@ -1,5 +1,6 @@
 # use MySQL:8.4 base image as latest stable version
-FROM docker.io/mysql:8.4
+# FROM docker.io/mysql:8.4
+FROM mysql:8.4
 
 # must define root password as environment variable (here
 # with empty password, which should not be in production)
@@ -15,6 +16,6 @@ COPY schema.sql /tmp
 COPY drop_data.sql /tmp
 COPY load_sample_data.sql /tmp
 
-# compound init files in db_init.sql used to initialize the
-# MySQL database if no data is foud in volume
-RUN cat /tmp/access.sql /tmp/schema.sql >> $DB_INIT_FILE
+# compound init files in db_init.sql to initialize the
+# MySQL database if no data is found in volume
+RUN cat /tmp/access.sql /tmp/schema.sql /tmp/load_sample_data.sql >> $DB_INIT_FILE
