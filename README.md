@@ -366,18 +366,10 @@ In the following step, the scaffold is created using *maven*.
 Run commands in the project directory:
 
 ```sh
-# define GAV-coordinates of the Java project holding jdbc-client code
-declare -gA GAV=(
-    [groupId]="de.freerider"
-    [artifactId]="jdbc-client"
-    [version]="1.0.0-SNAPSHOT"
-)
-
-
 mvn archetype:generate -DinteractiveMode=false \
-    -DgroupId=${GAV["groupId"]} \
-    -DartifactId=${GAV["artifactId"]} \
-    -Dversion=${GAV["version"]}
+    -DgroupId="de.freerider" \
+    -DartifactId="jdbc-client" \
+    -Dversion="1.0.0-SNAPSHOT"
 ```
 ```
 ...
