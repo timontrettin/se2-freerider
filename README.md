@@ -105,7 +105,6 @@ The project structure matches the default *Spring Boot* scaffold.
  |        |    +--<de/freerider>:           # artefact package path
  |        |            +--> <application>   # local package path
  |        |                   |
- |        |                   +--> AppConfig.java
  |        |                   +--> Application.java
  |        +--<resources>:
  |             +--> application.properties  # application configuration file
@@ -735,4 +734,5 @@ Open file in browser:
 ---
 ## 5. Check Project into Your Remote Repository
 
-Put the project under *git* control and check into your remote GitHub or BHT GitLab repository (in *main* or *master* branch).
+Put the project under *git* control and check into your remote GitHub or BHT GitLab repository
+(in *main* or *master* branch).
