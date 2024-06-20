@@ -397,7 +397,7 @@ export CLASSPATH="target/classes;$(cat classpath)"
 java de.freerider.application.Application
 ```
 
-Output for all variations:
+Output:
 
 ```
   .   ____          _            __ _ _
@@ -722,11 +722,11 @@ Or perform both combined:
 mvn site -DgenerateReports=false surefire-report:report     # do both
 ```
 
-The test report is found in: `target/site/surefire-report.html`.
+The test report is in: `target/site/surefire-report.html`.
 Open file in browser:
 
 <!-- ![surefire-report.html](./img/img_E1_01.png) -->
-<img src="./img/img_E1_01.png" alt="surefire-report.html" width="520"/>
+<img src="https://raw.githubusercontent.com/sgra64/se2-freerider/markup/e1-initializr/img/initializr_surefire_report.png" alt="surefire-report.html" width="600"/>
 
 
 &nbsp;
@@ -734,5 +734,20 @@ Open file in browser:
 ---
 ## 5. Check Project into Your Remote Repository
 
-Put the project under *git* control and check into your remote GitHub or BHT GitLab repository
-(in *main* or *master* branch).
+Put the project under *git* control and check the project into your
+[*BHT GitLab*](https://gitlab.bht-berlin.de) or
+[*GitHub*](https://github.com) (*"remote"*) repository.
+
+- Name the project: *"se2-freerider"* in the remote repository.
+
+- Put the content of this *"Spring initializr"* assignment under branch: `e1-initializr`
+    in the remote repository.
+
+- Put the content of the previous assignment
+    [MB1](https://github.com/sgra64/se2-freerider/tree/maven-jdbc)
+    ("*Maven Build & JDBC Database Access*") under the branch: `maven-jdbc`
+    in the remote repository.
+
+Briefly describe steps.
+
+
