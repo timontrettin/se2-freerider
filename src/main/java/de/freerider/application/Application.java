@@ -15,8 +15,8 @@ import java.util.Arrays;
 @SpringBootApplication
 public class Application implements CommandLineRunner {
 
-	@Autowired
-	Calculator calculator;      // Component
+    @Autowired
+    Calculator calculator;      // Component
 
     /**
      * Constructor executes when the Spring runtime system creates the Application Bean.
