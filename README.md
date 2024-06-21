@@ -21,7 +21,9 @@ follows certain steps. A Spring Boot project also has a certain structure.
 
 4. [Challenge 4:](#4-build-and-run-test-reports) Build and Run Test Reports - (1 Pts)
 
-5. [Challenge 5:](#5-check-project-into-your-remote-repository) Check Project into Your Remote Repository - (2 Pts)
+5. [Challenge 5:](#5-implement-spring-component) Implement Spring *@Component* - (1 Pt)
+
+6. [Challenge 6:](#6-check-project-into-your-remote-repository) Check Project into Your Remote Repository - (1 Pt)
 
 
 &nbsp;
@@ -732,7 +734,31 @@ Open file in browser:
 &nbsp;
 
 ---
-## 5. Check Project into Your Remote Repository
+## 5. Implement Spring *@Component*
+
+Implement a Spring *@Component: Calculator* that implements a method:
+
+```java
+int add(int x, int y);
+```
+
+Use component in `Application.java`:
+
+```java
+Calculator calculator;      // Component
+
+
+public void run(String... args) {
+    int sum = calculator.add(10, 2);
+    // print sum
+}
+```
+
+
+&nbsp;
+
+---
+## 6. Check Project into Your Remote Repository
 
 Put the project under *git* control and check the project into your
 [*BHT GitLab*](https://gitlab.bht-berlin.de) or
