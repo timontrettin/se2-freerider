@@ -52,7 +52,7 @@ public class Application implements CommandLineRunner {
 		System.out.println("\n-<7>--> calculator.add(10, 2) = " + sum);
     }
 
-	@Bean
+    @Bean
     public CommandLineRunner commandLineRunner(ApplicationContext context) {
         return args -> {
             System.out.println("\n-<6>--> Bean objects created by Spring Boot in ApplicationContext:");
