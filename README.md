@@ -745,6 +745,7 @@ int add(int x, int y);
 Use component in `Application.java`:
 
 ```java
+@Autowired
 Calculator calculator;      // Component
 
 
